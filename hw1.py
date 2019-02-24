@@ -9,7 +9,7 @@ lamb = 0.95
 # raw data
 def preprocess(path):
 	n_features = 18
-	data = np.genfromtxt(path, delimiter=',')[1:, 3:]
+	data = np.genfromtxt(path, delimiter=',', encoding='latin1')[1:, 3:]
 	
 	# original delete 722 ~ 1441 (march and april)
 	# data = np.delete(data, range(721,1441), axis=0)
