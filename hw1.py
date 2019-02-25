@@ -5,7 +5,7 @@ batch_size = 10 # 3360 = 84 * 40
 epochs = 20000
 lr = 0.1
 lamb = 0.95
-	
+
 # raw data
 def preprocess(path):
 	n_features = 18
@@ -86,7 +86,7 @@ def train(batch_size, epochs, lr):
 			loss += (delta ** 2).mean()
 		loss /= iterations
 		print ("{} epoch, loss = {}".format(i+1,loss))
-		if abs(loss - prev_loss) < 0.0001:
+		if abs(loss - prev_loss) < 0.00001:
 			print ("Training finished")
 			return
 		prev_loss = loss
