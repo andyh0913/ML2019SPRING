@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 
-batch_size = 471 # 5640 = 141 * 40
+batch_size = 471 # 5652 = 471 * 12
 epochs = 100000
 lr = 0.1
 lamb = 0.95
@@ -92,9 +92,10 @@ def preprocess(path):
 	x_train = []
 	y_train = []
 	for i in range(0, 12):
-		for j in range(0, 480-10):
+		for j in range(0, 480-9):
 			x_train.append(concat_data[i][:,j:j+9]) # get previous 9 hours
 			y_train.append(concat_data[i][9,j+9]) # predict the 10-th hour
+	print (len(x_train))
 	return np.array(x_train), np.array(y_train)
 
 	# return data
@@ -157,10 +158,12 @@ if __name__ == "__main__":
 	try:
 		train(batch_size, epochs, lr)
 	except (KeyboardInterrupt, SystemExit):
+		print ("save model!")
 		np.save('w.npy',w)
 		np.save('b.npy',b)
 		raise
 	
+	print ("save model!")
 	np.save('w.npy',w)
 	np.save('b.npy',b)
 
