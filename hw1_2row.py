@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 
-batch_size = 471 # 5640 = 141 * 40
+batch_size = 20 # 5640 = 141 * 40
 epochs = 100000
 lr = 0.1
 lamb = 0.95
@@ -23,21 +23,21 @@ def preprocess(path):
 	n_data = data.shape[0] // 18
 
 	# interpolation for negative value
-	# for i in range(data.shape[0]):
-	# 	for j in range(data.shape[1]):
-	# 		if data[i][j] < 0:
-	# 			if j == 0 or data[i][j-1]<0:
-	# 				if data[i][j+1] > 0:
-	# 					data[i][j] = data[i][1]
-	# 				else:
-	# 					data[i][j] = 0
-	# 			elif j == 23 or data[i][j+1]<0:
-	# 				if data[i][j-1] > 0:
-	# 					data[i][j] = data[i][22]
-	# 				else:
-	# 					data[i][j] = 0
-	# 			else:
-	# 				data[i][j] = (data[i][j-1] + data[i][j+1]) / 2
+	for i in range(data.shape[0]):
+		for j in range(data.shape[1]):
+			if data[i][j] < 0:
+				if j == 0 or data[i][j-1]<0:
+					if data[i][j+1] > 0:
+						data[i][j] = data[i][1]
+					else:
+						data[i][j] = 0
+				elif j == 23 or data[i][j+1]<0:
+					if data[i][j-1] > 0:
+						data[i][j] = data[i][22]
+					else:
+						data[i][j] = 0
+				else:
+					data[i][j] = (data[i][j-1] + data[i][j+1]) / 2
 
 
 
@@ -59,35 +59,6 @@ def preprocess(path):
 	for i in range(12):
 		concat_data.append( np.concatenate(data[(i*20):((i+1)*20)], axis=1) )
 	concat_data = np.array(concat_data)
-
-	# linear interpolation
-	for i in range(12):
-		for j in range(18):
-			for k in range(480):
-				if concat_data[i][j][k] < 0:
-					l, r = 0, 0
-					if k == 0 or k == 479:
-						concat_data[i][j][k] = 0
-						continue
-					else:
-						l = k-1
-						r = k+1
-						while(concat_data[i][j][l]<0):
-							l -= 1
-							if l < 0:
-								concat_data[i][j][0] = 0
-								l = 1
-								break
-						while(concat_data[i][j][r]<0):
-							r += 1
-							if r > 479:
-								concat_data[i][j][479] = 0
-								r = 478
-								break
-						delta = (concat_data[i][j][r] - concat_data[i][j][l])/(r - l)
-						concat_data[i][j][l:r] = [ concat_data[i][j][l] + (x - l)*delta for x in range(l,r) ]
-
-
 
 	x_train = []
 	y_train = []
