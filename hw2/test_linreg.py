@@ -6,13 +6,8 @@ if __name__ == "__main__":
 	w = np.load('w.npy')
 	b = np.load('b.npy')
 
-	if len(sys.argv) == 3:
-		input_path = sys.argv[1]
-		output_path = sys.argv[2]
-	elif len(sys.argv) > 3:
-		sys.exit("Extra arguments!")
-	else:
-		sys.exit("Missing arguments!")
+	input_path = sys.argv[2]
+	output_path = sys.argv[6]
 	
 	data = np.genfromtxt(input_path, delimiter=',')[1:]
 

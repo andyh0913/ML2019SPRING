@@ -86,8 +86,8 @@ def train(batch_size, epochs, lr):
 		print ("{} epoch, loss = {}, val_loss = {}".format(i+1,loss, val_loss))
 		if val_loss < min_loss:
 			print ("Model saved! Val_loss = {}".format(val_loss))
-			np.save('w.npy',w)
-			np.save('b.npy',b)
+			np.save('w_squ.npy',w)
+			np.save('b_squ.npy',b)
 			min_loss = val_loss
 
 
