@@ -14,4 +14,4 @@ with open(input_path, newline='') as csvfile:
 	data = np.reshape(np.array(data),[-1,48,48])
 for i,img_arr in enumerate(data):	
 	img = Image.fromarray(img_arr)
-	img.save('image/img{}.png'.format(i))
+	img.save('train_image/img{}.png'.format(i))

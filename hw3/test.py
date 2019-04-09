@@ -4,32 +4,56 @@ import tensorflow as tf
 import sys
 import csv
 
-lr = 0.0001
+drive_path = "/content/drive/My Drive/ML2019Spring/"
+
+lr = 0.001
+batch_size = 256
+
+def conv(x, filters):
+	return tf.keras.layers.Conv2D(filters,3,padding='same',activation='relu')(x)
+
+def maxpool(x):
+	return tf.keras.layers.MaxPooling2D(2)(x)
+
+def fc(x, units):
+	return tf.keras.layers.Dense(units, activation='relu')(x)
+
+def drop(x):
+	return tf.nn.dropout(x,rate=drop_rate)
+
+def flat(x):
+	return tf.keras.layers.Flatten()(x)
 
 # model
 inputs = tf.placeholder(dtype=tf.float32, shape=(None, 48, 48, 1))
-labels = tf.placeholder(dtype=tf.float32, shape=(None, 7))
+labels = tf.placeholder(dtype=tf.int32, shape=(None, 7))
 
-conv1 = tf.layers.conv2d(inputs, 32, [5,5],padding='same',activation=tf.nn.relu)
-pool1 = tf.layers.max_pooling2d(conv1, [3,3], [2,2])
+model = conv(inputs, 64)
+model = conv(model, 64)
+model = maxpool(model)
+model = conv(model, 128)
+model = conv(model, 128)
+model = maxpool(model)
+model = conv(model, 256)
+model = conv(model, 256)
+model = maxpool(model)
+model = conv(model, 512)
+model = conv(model, 512)
+model = maxpool(model)
+model = flat(model)
+model = fc(model, 512)
+# model = drop(model)
+model = fc(model, 512)
+# model = drop(model)
+model = fc(model, 7)
 
-conv2 = tf.layers.conv2d(pool1, 32, [4,4],padding='same',activation=tf.nn.relu)
-pool2 = tf.layers.max_pooling2d(conv2, [3,3], [2,2])
+outputs = tf.nn.softmax(model)
 
-conv3 = tf.layers.conv2d(pool2, 64, [5,5],padding='same',activation=tf.nn.relu)
-pool3 = tf.layers.max_pooling2d(conv3, [3,3], [2,2])
+correct_pred = tf.equal(tf.argmax(outputs, 1), tf.argmax(labels, 1))
+accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
-flat = tf.layers.flatten(pool3)
-fc1 = tf.layers.dense(flat, 2048, activation=tf.nn.relu)
-# dropout1 = tf.nn.dropout(fc1,rate=drop_rate)
-fc2 = tf.layers.dense(fc1, 1024, activation=tf.nn.relu)
-# dropout2 = tf.nn.dropout(fc2,rate=drop_rate)
-dense = tf.layers.dense(fc2, 7)
-
-outputs = tf.nn.softmax(dense)
-loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=labels, logits=dense))
+loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=labels, logits=model))
 optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(loss)
-
 if __name__ == "__main__":
 
 	input_path = sys.argv[1]
@@ -53,7 +77,14 @@ if __name__ == "__main__":
 		ckpt = tf.train.get_checkpoint_state('model')
 		if ckpt and tf.train.checkpoint_exists(ckpt.model_checkpoint_path):
 			saver.restore(sess, ckpt.model_checkpoint_path)
-		predict = sess.run(outputs, feed_dict={inputs:x_test})
+		
+		iterations =  x_test.shape[0]//batch_size
+		predict = []
+		for j in range(iterations):
+			x = x_test[j*batch_size:(j+1)*batch_size]
+			predict += list( sess.run(outputs, feed_dict={inputs:x}) )
+		if iterations*batch_size != x_test.shape[0]:
+			predict += list( sess.run(outputs, feed_dict={inputs:x_test[iterations*batch_size:]}) )
 		for i,test_y in enumerate(predict):
 			output_list.append([i, np.argmax(test_y)])
 
