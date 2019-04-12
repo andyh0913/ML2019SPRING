@@ -1,0 +1,5 @@
+https://github.com/andyh0913/ML2019SPRING/releases/download/hw3_models/model_0.h5
+https://github.com/andyh0913/ML2019SPRING/releases/download/hw3_models/model_1.h5
+https://github.com/andyh0913/ML2019SPRING/releases/download/hw3_models/model_2.h5
+https://github.com/andyh0913/ML2019SPRING/releases/download/hw3_models/model_3.h5
+https://github.com/andyh0913/ML2019SPRING/releases/download/hw3_models/model_4.h5

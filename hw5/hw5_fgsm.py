@@ -31,9 +31,7 @@ def fgsm(x, label):
 	y = K.one_hot(np.expand_dims(label,axis=0), 1000)
 	loss = K.categorical_crossentropy(y, model.output)
 	grads = K.gradients(loss, model.input)
-	print (grads)
 	delta = K.sign(grads[0])
-	print (delta)
 	x_adv = x_adv + epsilon*delta
 
 	x_adv = sess.run(x_adv, feed_dict={model.input: x})
@@ -48,6 +46,7 @@ def fgsm(x, label):
 if __name__ == '__main__':
 	x,labels = load_data()
 	output_path = "output"
+	print (labels.shape)
 
 	for i in range(labels.shape[0]):
 		img_path = os.path.join(output_path, str(i).zfill(3) + ".png")
