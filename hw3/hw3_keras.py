@@ -3,22 +3,29 @@ import sys
 import os
 import csv
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Conv2D, MaxPooling2D, Flatten
+from keras.layers import Dense, Dropout, Activation, Conv2D, MaxPooling2D, Flatten, Softmax
 from keras.utils import np_utils
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 from keras.layers.normalization import BatchNormalization
 from keras.callbacks import ModelCheckpoint
 
-drive_path = "/content/drive/My Drive/ML2019Spring/"
+drive_path = "/content/drive/My Drive/ML2019Spring/hw4/"
+inDrive = False
+
 
 valid_rate = 0.2
 epochs = 100
-batch_size = 256 
+batch_size = 256
 
 def preprocess(path):
-	x_path = "data/x_train.npy"
-	y_path = "data/y_train.npy"
+	if inDrive:
+		x_path = drive_path + "data/x_train.npy"
+		y_path = drive_path + "data/y_train.npy"
+	else:
+		x_path = "data/x_train.npy"
+		y_path = "data/y_train.npy"
+
 	if (os.path.isfile(x_path) and os.path.isfile(y_path)):
 		x_train = np.load(x_path)
 		y_train = np.load(y_path)
@@ -43,8 +50,12 @@ def preprocess(path):
 		# 0-255 subject to 0-1
 		x_train = x_train / 255.
 		n_valid = (int)(x_train.shape[0]*valid_rate)
-		np.save('data/x_train.npy', x_train)
-		np.save('data/y_train.npy', y_train)
+		if inDrive:
+			np.save(drive_path + 'data/x_train.npy', x_train)
+			np.save(drive_path + 'data/y_train.npy', y_train)
+		else:
+			np.save('data/x_train.npy', x_train)
+			np.save('data/y_train.npy', y_train)
 
 	return x_train[:-n_valid], y_train[:-n_valid], x_train[-n_valid:], y_train[-n_valid:]
 
@@ -95,7 +106,8 @@ def train(epochs, batch_size, argumentation=False):
 	model.add(BatchNormalization())
 	model.add(Dropout(0.5))
 
-	model.add(Dense(7, activation='softmax'))
+	model.add(Dense(7))
+	model.add(Softmax(axis=-1))
 
 	model.summary()
 	#compiling
@@ -103,7 +115,10 @@ def train(epochs, batch_size, argumentation=False):
 	model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 	
 	#check point
-	filepath='model_S.h5'
+	if inDrive:
+		filepath=drive_path + 'model_noaug.h5'
+	else:
+		filepath='model_noaug.h5'
 	checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 	callbacks_list = [checkpoint]
 	
@@ -123,6 +138,15 @@ def train(epochs, batch_size, argumentation=False):
 				callbacks=callbacks_list)
 
 if __name__=="__main__":
-	path = "data/train.csv"
+	if len(sys.argv) > 1:
+		if sys.argv[1].strip('-') == 'G' or sys.argv[1].strip('-') == 'g':
+			inDrive = True
+	if inDrive:
+		path = drive_path + "data/train.csv"
+		print ("Train in google drive...")
+	else:
+		print ("Train in local...")
+		path = "data/train.csv"
+
 	x_train, y_train, x_valid, y_valid = preprocess(path)
-	train(epochs, batch_size, True)
+	train(epochs, batch_size, False)

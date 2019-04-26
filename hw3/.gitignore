@@ -2,3 +2,8 @@ data
 image
 train_image
 model*
+*.npy
+confusion*
+*.png
+*.txt
+

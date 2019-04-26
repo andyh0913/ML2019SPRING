@@ -7,14 +7,18 @@ import pandas as pd
 from keras.models import load_model
 
 drive_path = "/content/drive/My Drive/ML2019Spring/hw3/"
-inDrive = False
-
 batch_size = 256
+
+inDrive = False
 
 if __name__ == "__main__":
 
 	input_path = sys.argv[1]
 	output_path = sys.argv[2]
+
+	if len(sys.argv) > 3:
+		if sys.argv[2].strip('-') == 'G' or sys.argv[2].strip('-') == 'g':
+			inDrive = True
 
 	x_test = []
 	with open(input_path, newline='') as csvfile:
@@ -28,30 +32,11 @@ if __name__ == "__main__":
 	# 0-255 subject to 0-1
 	x_test = x_test / 255.
 
-	output_list = [["id", "label"]]
-	models = []
-	for i in range(5):
-		if inDrive:
-			model = load_model(drive_path + 'model_'+str(i)+'.h5')
-		else:
-			model = load_model('model_'+str(i)+'.h5')			
-		models.append(model)
-	
-	iterations =  x_test.shape[0]//batch_size
-	ans = []
-	for j in range(iterations):
-		x = x_test[j*batch_size:(j+1)*batch_size]
-		predicts = np.zeros((x.shape[0],7))
-		for k in range(5):
-			predicts += models[k].predict(x)
-		ans += np.argmax(predicts, axis=1).tolist()
+	predict = []
 	if iterations*batch_size < x_test.shape[0]:
 		x = x_test[iterations*batch_size:]
-		predicts = np.zeros((x.shape[0],7))
-		for k in range(5):
-			predicts += models[k].predict(x)
-		ans += np.argmax(predicts, axis=1).tolist()
-	for i,test_y in enumerate(ans):
+		predict += np.argmax(model.predict(x), axis=1).tolist()
+	for i,test_y in enumerate(predict):
 		output_list.append([i, test_y])
 
 	print("Generate ans.csv!")
