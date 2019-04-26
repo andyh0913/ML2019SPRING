@@ -17,6 +17,8 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 import scipy.misc
+import scipy.signal.medfilt as medfilt
+
 
 mean=[0.485, 0.456, 0.406]
 std = [0.229, 0.224, 0.225]
@@ -56,7 +58,7 @@ def main():
     train_acc = 0
     progress = ['/', '-', '\\', '|']
         
-    for i in range(200):
+    for i in range(z):
         msg = 'solving [%03d%s%03d] ' % (  i + 1,progress[(i+1) % 4], 200)
         print(msg, end = '', flush  = True)
         back = '\b' * len(msg)
