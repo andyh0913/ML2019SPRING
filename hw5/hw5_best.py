@@ -38,7 +38,7 @@ def load_data(folder_path="/content/drive/My Drive/ML2019Spring/hw5/data/images"
     return img_list, labels.astype(int)
 
 if __name__ == '__main__':
-	input_path = sys.argv[1]
+    input_path = sys.argv[1]
     output_path = sys.argv[2]
     mean=[0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
