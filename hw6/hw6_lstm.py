@@ -7,7 +7,7 @@ from gensim import models
 from gensim.models import KeyedVectors
 import json
 from keras.models import Sequential
-from keras.layers import Dense, Flatten, LSTM, Dropout, Activation
+from keras.layers import Dense, Flatten, LSTM, Dropout, Activation, Bidirectional, LeakyReLU, multiply
 from keras.layers.embeddings import Embedding
 from keras.callbacks import ModelCheckpoint
 
@@ -20,6 +20,7 @@ batch_size = 1000
 
 
 def load_data(folder_path="./data"):
+	print ("Loading data...")
 	x_path = os.path.join(folder_path,"train_x.csv")
 	y_path = os.path.join(folder_path,"train_y.csv")
 	t_path = os.path.join(folder_path,"test_x.csv")
@@ -48,6 +49,15 @@ def load_data(folder_path="./data"):
 
 # def embedding(split_sentences):
 
+def attention(inputs):
+    #input_dim = int(inputs.shape[2])
+    a = Permute((2, 1))(inputs)
+    a = Dense(TIME_STEPS, activation='softmax')(a)
+    a_probs = Permute((2, 1), name='attention_vec')(a)
+    #output_attention_mul = merge([inputs, a_probs], name='attention_mul', mode='mul')
+    output_attention_mul = multiply([inputs, a_probs], name='attention_mul')
+    return output_attention_mul
+
 if __name__ == '__main__':
 	folder_path = "./data"
 	save_path = "./models"
@@ -68,6 +78,7 @@ if __name__ == '__main__':
 
 	# Build word2idx.json and idx2word.json
 	if not (os.path.exists("word2idx.json") and os.path.exists("idx2word.json")):
+		print ("Building word2idx.json and idx2word.json...")
 		word2idx = {}
 		idx2word = {}
 		idx2word[0] = "<PAD>"
@@ -118,7 +129,7 @@ if __name__ == '__main__':
 					new_sentence.append(1) # 3 for <UNK>
 			if len(new_sentence) > max_time_steps:
 				new_sentence = new_sentence[0:max_time_steps]
-				sentence_lengths[i] = max_time_steps
+				# sentence_lengths[i] = max_time_steps
 				# new_sentence[max_time_steps-1] = 2 # 2 for <EOS>
 			else:
 				l = max_time_steps - len(new_sentence)
@@ -136,11 +147,12 @@ if __name__ == '__main__':
 
 	model = Sequential()
 	model.add(Embedding(vocabulary_size, embedding_dim, input_length=max_time_steps, weights=[embedding_matrix], trainable=False))
-	model.add(LSTM(embedding_dim, return_sequences=True))
-	model.add(LSTM(embedding_dim))
+	model.add(Bidirectional(LSTM(embedding_dim, return_sequences=True, unit_forget_bias=False, dropout=0.2, recurrent_dropout=0.2), merge_mode='sum'))
+	model.add(Bidirectional(LSTM(embedding_dim, unit_forget_bias=False, dropout=0.2, recurrent_dropout=0.2), merge_mode='sum'))
 	model.add(Dense(256))
-	model.add(Dropout(0.2))
+	model.add(LeakyReLU(0.2))
 	model.add(Dense(256))
+	model.add(LeakyReLU(0.2))
 	model.add(Dense(1))
 	model.add(Activation('sigmoid'))
 	model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])

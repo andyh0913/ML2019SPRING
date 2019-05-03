@@ -99,7 +99,7 @@ if __name__ == '__main__':
 		preds = model.predict(test_x)
 		for j in range(batch_size):
 			output_list = output_list + [[i*batch_size+j, int(round(preds[j][0]))]]
-	print (output_list)
+	# print (output_list)
 	output_file = pd.DataFrame(output_list)
 	output_file.to_csv(output_path, index=False, header=False)
 	print ("Generate ans.csv!")

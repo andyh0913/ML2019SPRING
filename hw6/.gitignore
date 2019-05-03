@@ -3,3 +3,5 @@ data/
 *.json
 *.npy
 models/
+*.tar.gz
+
