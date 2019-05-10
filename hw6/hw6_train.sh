@@ -1,0 +1,1 @@
+python3 hw6_lstm.py $1 $2 $3 $4
