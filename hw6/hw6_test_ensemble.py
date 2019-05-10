@@ -90,10 +90,10 @@ if __name__ == '__main__':
 		idx_sentences.append(new_sentence)
 	idx_sentences = np.array(idx_sentences)
 
-	model1 = load_model("models/model_5.h5", custom_objects={'Attention': Attention()})
-	model2 = load_model("models/model_6.h5", custom_objects={'Attention': Attention()})
-	model3 = load_model("models/model_3.h5", custom_objects={'Attention': Attention()})
-	model4 = load_model("models/model_4.h5", custom_objects={'Attention': Attention()})
+	model1 = load_model("model_5.h5", custom_objects={'Attention': Attention()})
+	model2 = load_model("model_6.h5", custom_objects={'Attention': Attention()})
+	model3 = load_model("model_7.h5", custom_objects={'Attention': Attention()})
+	model4 = load_model("model_4.h5", custom_objects={'Attention': Attention()})
 
 	iterations = idx_sentences.shape[0] // batch_size
 

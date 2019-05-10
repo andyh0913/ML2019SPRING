@@ -3,7 +3,6 @@ models/
 *.tar.gz
 0.*
 *.png
-*.txt
 *.h5
 *loss.npy
 *acc.npy

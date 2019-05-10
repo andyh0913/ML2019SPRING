@@ -1,0 +1,4 @@
+https://github.com/andyh0913/ML2019SPRING/releases/download/v1.0/model_4.h5
+https://github.com/andyh0913/ML2019SPRING/releases/download/v1.0/model_5.h5
+https://github.com/andyh0913/ML2019SPRING/releases/download/v1.0/model_6.h5
+https://github.com/andyh0913/ML2019SPRING/releases/download/v1.0/model_7.h5
