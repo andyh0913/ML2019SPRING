@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import sys
 import torch 
 import torch.nn as nn
 import torchvision.transforms as transform
@@ -16,24 +17,20 @@ model = vgg19(pretrained=True)
 model.eval()
 criterion = nn.CrossEntropyLoss()
 
-def load_data(folder_path="/content/drive/My Drive/ML2019Spring/hw5/data/images", labels_path="/content/drive/My Drive/ML2019Spring/hw5/data/labels.csv"):
-    if os.path.isfile("./data/img_list.npy"):
-        print ("Read data from img_list.npy...")
-        img_list = np.load("./data/img_list.npy")
-    else:
-        print ("Preprocessing data...")
-        normalize = transform.Normalize(mean=[0.485, 0.456, 0.406],std=[0.229, 0.224, 0.225])
-        preprocess = transform.Compose([transform.ToTensor(),normalize])
-        
-        img_list = []
-        for i in range(200):
-            img_path = os.path.join(folder_path, str(i).zfill(3) + ".png")
-            img = Image.open(img_path)
-            img = preprocess(img).numpy()
-            print (img.shape)
-            img_list.append(img)
-        img_list = np.array(img_list)
-        np.save("./data/img_list.npy", img_list)
+def load_data(folder_path, labels_path='./labels.csv'):
+    print ("Preprocessing data...")
+    normalize = transform.Normalize(mean=[0.485, 0.456, 0.406],std=[0.229, 0.224, 0.225])
+    preprocess = transform.Compose([transform.ToTensor(),normalize])
+    
+    img_list = []
+    for i in range(200):
+        img_path = os.path.join(folder_path, str(i).zfill(3) + ".png")
+        img = Image.open(img_path)
+        img = preprocess(img).numpy()
+        print (img.shape)
+        img_list.append(img)
+    img_list = np.array(img_list)
+        # np.save("./data/img_list.npy", img_list)
     labels = np.genfromtxt(labels_path, delimiter=',')[1:,3:4]
     return img_list, labels.astype(int)
 
