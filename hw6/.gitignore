@@ -1,7 +1,11 @@
 data/
-*.wv
-*.json
-*.npy
 models/
 *.tar.gz
+0.*
+*.png
+*.txt
+*.h5
+*loss.npy
+*acc.npy
+idx_sentences.npy
 

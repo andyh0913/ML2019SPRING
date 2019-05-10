@@ -11,11 +11,15 @@ from keras.layers import Dense, Flatten, LSTM, Dropout, Activation
 from keras.layers.embeddings import Embedding
 from keras.callbacks import ModelCheckpoint
 from keras.models import load_model
+from attention import Attention
 
 max_time_steps = 100
 embedding_dim = 100
 epochs = 100
 batch_size = 1000
+
+PAD = 0
+UNK = 1
 
 
 def load_data(folder_path="./data"):
@@ -46,9 +50,6 @@ if __name__ == '__main__':
 	save_path = "./models"
 	output_path = "./result/ans.csv"
 	split_sentences, sentence_lengths = load_data()
-	if not os.path.exists("w2v_model.wv"):
-		print ("w2v_model.wv not exists!")
-	wv = KeyedVectors.load("w2v_model.wv", mmap='r')
 
 	if not (os.path.exists("word2idx.json") and os.path.exists("idx2word.json")):
 		print("json files not exist!")
@@ -73,7 +74,7 @@ if __name__ == '__main__':
 			if w in word2idx:
 				new_sentence.append(word2idx[w])
 			else:
-				new_sentence.append(1) # 3 for <UNK>
+				new_sentence.append(UNK) # 3 for <UNK>
 		if len(new_sentence) > max_time_steps:
 			new_sentence = new_sentence[0:max_time_steps]
 			sentence_lengths[i] = max_time_steps
@@ -81,7 +82,7 @@ if __name__ == '__main__':
 		else:
 			l = max_time_steps - len(new_sentence)
 			for i in range(l):
-				new_sentence.append(0)
+				new_sentence.append(PAD)
 		# else:
 		# 	new_sentence.append(2)
 		# 	for i in range(max_time_steps-len(new_sentence)):
@@ -89,7 +90,7 @@ if __name__ == '__main__':
 		idx_sentences.append(new_sentence)
 	idx_sentences = np.array(idx_sentences)
 
-	model = load_model("models/model_best.h5")
+	model = load_model("models/model_best.h5", custom_objects={'Attention': Attention()})
 	iterations = idx_sentences.shape[0] // batch_size
 
 	output_list = [["id", "label"]]
