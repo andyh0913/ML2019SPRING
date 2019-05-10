@@ -21,7 +21,6 @@ def load_data(folder_path, labels_path='./labels.csv'):
     print ("Preprocessing data...")
     normalize = transform.Normalize(mean=[0.485, 0.456, 0.406],std=[0.229, 0.224, 0.225])
     preprocess = transform.Compose([transform.ToTensor(),normalize])
-    
     img_list = []
     for i in range(200):
         img_path = os.path.join(folder_path, str(i).zfill(3) + ".png")
