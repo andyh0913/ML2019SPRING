@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+import sys
 import jieba
 from gensim.models import Word2Vec
 from gensim import models
@@ -243,16 +244,16 @@ class Attention(Layer):
         else:
             return input_shape[0], input_shape[-1]
 
-def load_data(folder_path="./data"):
+def load_data(train_x_path, train_y_path, test_x_path, dict_path):
 	print ("Loading data...")
-	x_path = os.path.join(folder_path,"train_x.csv")
-	y_path = os.path.join(folder_path,"train_y.csv")
-	t_path = os.path.join(folder_path,"test_x.csv")
+	x_path = train_x_path
+	y_path = train_y_path
+	t_path = test_x_path
 	x_train = pd.read_csv(x_path).values[0:119017,1]
 	y_train = pd.read_csv(y_path).values[0:119017,1]
 	x_test  = pd.read_csv(t_path).values[:,1]
 
-	jieba.set_dictionary('data/dict.txt.big')
+	jieba.set_dictionary(dict_path)
 	split_sentences = []
 	# sentence_lengths = []
 
@@ -298,9 +299,13 @@ def load_data(folder_path="./data"):
 
 
 if __name__ == '__main__':
-	folder_path = "./data"
+	train_x_path = sys.argv[1]
+	train_y_path = sys.argv[2]
+	test_x_path = sys.argv[3]
+	dict_path = sys.argv[4]
+
 	save_path = "./models"
-	split_sentences, train_length, labels = load_data()
+	split_sentences, train_length, labels = load_data(train_x_path,train_y_path,test_x_path,dict_path)
 
 	# Build Word2Vec model
 	if not os.path.exists("w2v_model.wv"):

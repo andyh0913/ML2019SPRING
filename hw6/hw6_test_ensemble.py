@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+import sys
 import jieba
 from gensim.models import Word2Vec
 from gensim import models
@@ -23,13 +24,13 @@ PAD = 0
 UNK = 1
 
 
-def load_data(folder_path="./data"):
-	x_path = os.path.join(folder_path,"test_x.csv")
+def load_data(test_x_path, dict_path):
+	x_path = test_x_path
 	# y_path = os.path.join(folder_path,"train_y.csv")
 	x_test = pd.read_csv(x_path).values[:,1]
 	# y_train = pd.read_csv(y_path).values[:,1]
 
-	jieba.set_dictionary('data/dict.txt.big')
+	jieba.set_dictionary(dict_path)
 	split_sentences = []
 	sentence_lengths = []
 
@@ -47,10 +48,10 @@ def load_data(folder_path="./data"):
 # def embedding(split_sentences):
 
 if __name__ == '__main__':
-	folder_path = "./data"
-	save_path = "./models"
-	output_path = "./result/ans.csv"
-	split_sentences, sentence_lengths = load_data()
+	test_x_path = sys.argv[1]
+	dict_path = sys.argv[2]
+	output_path = sys.argv[3]
+	split_sentences, sentence_lengths = load_data(test_x_path, dict_path)
 
 	if not (os.path.exists("word2idx.json"):
 		print("json files not exist!")
