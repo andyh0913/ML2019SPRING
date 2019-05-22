@@ -1,0 +1,6 @@
+*.npy
+*.jpg
+models/
+data/
+0.*
+Aberdeen/
