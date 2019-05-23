@@ -9,7 +9,7 @@ from keras.preprocessing.image import ImageDataGenerator
 
 epochs = 100
 batch_size = 128
-encoded_dim = 128
+encoded_dim = 192
 augmentation = True
 
 def load_data(image_directory='./data/images'):
@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
 	if augmentation:
 		datagen = ImageDataGenerator(horizontal_flip=True, rotation_range=30, zoom_range=0.2,
-				shear_range=0.2, fill_mode='nearest', validation_split=0.2)
+				shear_range=0.2, fill_mode='nearest', validation_split=0.1)
 		datagen.fit(train_x)
 
 	model = Sequential()
@@ -72,8 +72,8 @@ if __name__ == '__main__':
 
 	checkpoint = ModelCheckpoint(os.path.join(save_directory,"model_best.h5"), monitor='val_loss', mode='min', save_best_only=True)
 
-	samples_per_epoch = int(len(train_x)*0.8*8)
-	validation_steps = int(len(train_x)*0.2/batch_size)
+	samples_per_epoch = int(len(train_x)*0.9*8)
+	validation_steps = int(len(train_x)*0.1/batch_size)
 
 	if augmentation:
 		model.fit_generator(datagen.flow(train_x, train_x, batch_size,subset='training'),

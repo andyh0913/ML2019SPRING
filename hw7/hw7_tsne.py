@@ -50,19 +50,22 @@ if __name__ == '__main__':
 	for i in range(9):
 		model.pop()
 
-	print ("Doing t-SNE...")
+	# print ("Doing t-SNE...")
 	encoded_x = preprocess(train_x, model)
-	tsne = TSNE(n_components=2, perplexity=50)
-	x_tsne = tsne.fit_transform(encoded_x)
-	np.save("x_tsne.npy", x_tsne)
+	# tsne = TSNE(n_components=2, perplexity=50, n_jobs=8, verbose=1)
+	# x_tsne = tsne.fit_transform(encoded_x)
+	# np.save("x_tsne.npy", x_tsne)
 
 	# x_tsne = np.load("x_tsne.npy")
 
+	pca = PCA(n_components=2, whiten=True)
+	pca_img = pca.fit_transform(encoded_x)
+
 	print ("Doing KMeans...")
-	kmeans_fit = KMeans(n_clusters = 2).fit(x_tsne)
+	kmeans_fit = KMeans(n_clusters = 2).fit(pca_img)
 	cluster_labels = kmeans_fit.labels_
 
-	# pca = PCA(n_components=2, svd_solver='full')
+	
 
 	cluster1 = cluster_labels[test_x[:,0]-1]
 	cluster2 = cluster_labels[test_x[:,1]-1]

@@ -34,20 +34,30 @@ if __name__ == '__main__':
 	# for i,layer in enumerate(model.layers):
 	# 	print (i,layer)
 
-	while(True):
-		index = input("Please enter the index: ")
-		index = int(index)
-		if index < 0:
-			print ("Exit!")
-			break
+	# while(True):
+	# 	index = input("Please enter the index: ")
+	# 	index = int(index)
+	# 	if index < 0:
+	# 		print ("Exit!")
+	# 		break
+	# 	x = train_x[index:index+1]
+	# 	arr = model.predict(x)[0]
+	# 	arr = (arr*127.5+127.5).astype(np.uint8)
+	# 	x_arr = (x[0]*127.5+127.5).astype(np.uint8)
+	# 	img = Image.fromarray(arr)
+	# 	x_img = Image.fromarray(x_arr)
+	# 	x_img.show()
+	# 	img.show()
+
+	for index in range (32):
 		x = train_x[index:index+1]
 		arr = model.predict(x)[0]
 		arr = (arr*127.5+127.5).astype(np.uint8)
 		x_arr = (x[0]*127.5+127.5).astype(np.uint8)
 		img = Image.fromarray(arr)
-		x_img = Image.fromarray(x_arr)
-		x_img.show()
-		img.show()
+		# x_img = Image.fromarray(x_arr)
+		# x_img.show()
+		img.save("{}_re.jpg".format(index))
 
 
 

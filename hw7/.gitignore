@@ -1,5 +1,6 @@
 *.npy
 *.jpg
+*.png
 models/
 data/
 0.*
