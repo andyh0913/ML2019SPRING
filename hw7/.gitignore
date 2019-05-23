@@ -1,7 +1,7 @@
 *.npy
 *.jpg
 *.png
-models/
+model*
 data/
 0.*
 Aberdeen/

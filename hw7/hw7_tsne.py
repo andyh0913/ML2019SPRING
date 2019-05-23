@@ -41,9 +41,14 @@ def preprocess(train_x, model):
 
 
 if __name__ == '__main__':
-	train_x, test_x = load_data()
-	model_path = './models/model_best.h5'
-	output_path = './result/ans.csv'
+	
+	# model_path = './models/model_best.h5'
+	model_path = './model_best.h5'
+	# output_path = './result/ans.csv'
+	image_directory = sys.argv[1]
+	csv_path = sys.argv[2]
+	output_path = sys.argv[3]
+	train_x, test_x = load_data(image_directory=image_directory, csv_path=csv_path)
 	model = load_model(model_path)
 	for i,layer in enumerate(model.layers):
 		print (i,layer)
@@ -52,17 +57,17 @@ if __name__ == '__main__':
 
 	# print ("Doing t-SNE...")
 	encoded_x = preprocess(train_x, model)
-	# tsne = TSNE(n_components=2, perplexity=50, n_jobs=8, verbose=1)
-	# x_tsne = tsne.fit_transform(encoded_x)
+	tsne = TSNE(n_components=2, perplexity=50, n_jobs=8, verbose=1)
+	x_tsne = tsne.fit_transform(encoded_x)
 	# np.save("x_tsne.npy", x_tsne)
 
 	# x_tsne = np.load("x_tsne.npy")
 
-	pca = PCA(n_components=2, whiten=True)
-	pca_img = pca.fit_transform(encoded_x)
+	# pca = PCA(n_components=2, whiten=True)
+	# pca_img = pca.fit_transform(encoded_x)
 
 	print ("Doing KMeans...")
-	kmeans_fit = KMeans(n_clusters = 2).fit(pca_img)
+	kmeans_fit = KMeans(n_clusters = 2).fit(x_tsne)
 	cluster_labels = kmeans_fit.labels_
 
 	

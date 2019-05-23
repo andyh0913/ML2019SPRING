@@ -3,7 +3,7 @@ import sys
 import numpy as np 
 from skimage.io import imread, imsave
 
-test_images = ['1.jpg','10.jpg','22.jpg','37.jpg','72.jpg']
+# test_images = ['1.jpg','10.jpg','22.jpg','37.jpg','72.jpg']
 k = 5
 
 
@@ -27,13 +27,17 @@ def process(M):
 	return M
 
 if __name__ == '__main__':
-	image_dir = './Aberdeen'
-	img_shape, mean, training_data = load_data_and_normalize()
+	# image_dir = './Aberdeen'
+	image_dir = sys.argv[1]
+	input_image_name = sys.argv[2]
+	output_image_path = sys.argv[3]
+
+	img_shape, mean, training_data = load_data_and_normalize(image_dir)
 	# print (training_data)
-	average_img = process(mean)
+	# average_img = process(mean)
 	
 	# problem 1.a
-	imsave('average.jpg', average_img.reshape(img_shape))
+	# imsave('average.jpg', average_img.reshape(img_shape))
 
 	# problem 1.b
 	u, s, v = np.linalg.svd(training_data.transpose(), full_matrices = False)
@@ -41,11 +45,12 @@ if __name__ == '__main__':
 	print (s.shape)
 	print (v.shape)
 
-	for i in range(5):
-		eigenface = process(u.transpose()[i])
-		imsave(str(i) + '_eigenface.jpg', eigenface.reshape(img_shape))
+	# for i in range(5):
+	# 	eigenface = process(u.transpose()[i])
+	# 	imsave(str(i) + '_eigenface.jpg', eigenface.reshape(img_shape))
 
 	# problem 1.c
+	test_images = [input_image_name]
 	for x in test_images:
 		picked_img = imread(os.path.join(image_dir, x))
 		X = picked_img.flatten().astype('float32')
@@ -53,9 +58,9 @@ if __name__ == '__main__':
 
 		weight = np.array([X.dot(u.transpose()[i])] for i in range(k))
 		reconstruct = process(weight.dot(u.transpose()[:k]) + mean)
-		imsave(x[:-4] + '_reconstruction.jpg', reconstruct,reshape(img_shape))
+		imsave(output_image_path, reconstruct.reshape(img_shape))
 
 	# problem 1.d
-	for i in range(5):
-		number = s[i] * 100 / sum(s)
-		print(number)
+	# for i in range(5):
+	# 	number = s[i] * 100 / sum(s)
+	# 	print(number)
