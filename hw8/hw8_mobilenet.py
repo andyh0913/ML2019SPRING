@@ -29,32 +29,32 @@ def load_data(csv_path="./data/train.csv"):
 
 def build_model():
 	model = Sequential()
-	# (48,48,32)
+
 	model.add(Conv2D(16, 3, strides=2, padding='same', input_shape=(48,48,1)))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
-	# (24,24,32)
+
 	model.add(DepthwiseConv2D(3, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
 	model.add(Conv2D(32, 1, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
-	# (24,24,64)
+
 	model.add(DepthwiseConv2D(3, strides=2, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
 	model.add(Conv2D(32, 1, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
-	# (12,12,128)
+
 	model.add(DepthwiseConv2D(3, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
 	model.add(Conv2D(64, 1, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
-	# (12,12,256)
+
 	model.add(DepthwiseConv2D(3, strides=2, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
@@ -62,7 +62,6 @@ def build_model():
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
 	
-	# (6,6,256)
 	model.add(DepthwiseConv2D(3, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
@@ -70,24 +69,8 @@ def build_model():
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
 	
-# 	# (6,6,256)
-# 	model.add(DepthwiseConv2D(3, strides=2, padding='same'))
-# 	model.add(Activation('relu'))
-# 	model.add(BatchNormalization())
-# 	model.add(Conv2D(512, 1, strides=1, padding='same'))
-# 	model.add(Activation('relu'))
-# 	model.add(BatchNormalization())
-	# (3,3,512)
-	# model.add(DepthwiseConv2D(3, strides=1, padding='same'))
-	# model.add(Activation('relu'))
-	# model.add(BatchNormalization())
-	# model.add(Conv2D(512, 1, strides=1, padding='same'))
-	# model.add(Activation('relu'))
-	# model.add(BatchNormalization())
-	# (3,3,512)
 	model.add(GlobalAveragePooling2D())
-	# 
-	# model.add(Flatten())
+
 	model.add(Dense(128))
 	model.add(Activation('relu'))
 	model.add(Dropout(0.3))
@@ -96,13 +79,13 @@ def build_model():
 
 	model.summary()
 	opt = Adam(lr=0.005)
-	# opt = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 	model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
 	return model
 
 if __name__ == '__main__':
-	x_train, y_train = load_data()
+	train_data_path = sys.argv[1]
+	x_train, y_train = load_data(train_data_path)
 	print (x_train.shape)
 	model_path = './models/model_best.h5'
 	model = build_model()

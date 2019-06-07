@@ -16,65 +16,48 @@ batch_size = 256
 
 def build_model():
 	model = Sequential()
-	# (48,48,32)
+
 	model.add(Conv2D(16, 3, strides=2, padding='same', input_shape=(48,48,1)))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
-	# (24,24,32)
+
 	model.add(DepthwiseConv2D(3, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
 	model.add(Conv2D(32, 1, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
-	# (24,24,64)
+
 	model.add(DepthwiseConv2D(3, strides=2, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
 	model.add(Conv2D(32, 1, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
-	# (12,12,128)
+
 	model.add(DepthwiseConv2D(3, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
 	model.add(Conv2D(64, 1, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
-	# (12,12,256)
+
 	model.add(DepthwiseConv2D(3, strides=2, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
 	model.add(Conv2D(128, 1, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
-	
-	# (6,6,256)
+
 	model.add(DepthwiseConv2D(3, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
 	model.add(Conv2D(128, 1, strides=1, padding='same'))
 	model.add(Activation('relu'))
 	model.add(BatchNormalization())
-	
-# 	# (6,6,256)
-# 	model.add(DepthwiseConv2D(3, strides=2, padding='same'))
-# 	model.add(Activation('relu'))
-# 	model.add(BatchNormalization())
-# 	model.add(Conv2D(512, 1, strides=1, padding='same'))
-# 	model.add(Activation('relu'))
-# 	model.add(BatchNormalization())
-	# (3,3,512)
-	# model.add(DepthwiseConv2D(3, strides=1, padding='same'))
-	# model.add(Activation('relu'))
-	# model.add(BatchNormalization())
-	# model.add(Conv2D(512, 1, strides=1, padding='same'))
-	# model.add(Activation('relu'))
-	# model.add(BatchNormalization())
-	# (3,3,512)
+
 	model.add(GlobalAveragePooling2D())
-	# 
-	# model.add(Flatten())
+
 	model.add(Dense(128))
 	model.add(Activation('relu'))
 	model.add(Dropout(0.3))
@@ -86,10 +69,10 @@ def build_model():
 if __name__ == "__main__":
 	augmentation = True
 	ensemble_num = 8
-	# input_path = sys.argv[1]
-	# output_path = sys.argv[2]
-	input_path = "./data/test.csv"
-	output_path = "./result/ans_new_c.csv"
+	input_path = sys.argv[1]
+	output_path = sys.argv[2]
+	# input_path = "./data/test.csv"
+	# output_path = "./result/ans_new_c.csv"
 
 	x_test = []
 	with open(input_path, newline='') as csvfile:
