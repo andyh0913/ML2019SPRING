@@ -53,7 +53,7 @@ if __name__ == '__main__':
 	output_path = sys.argv[3]
 	split_sentences, sentence_lengths = load_data(test_x_path, dict_path)
 
-	if not (os.path.exists("word2idx.json"):
+	if not os.path.exists("word2idx.json"):
 		print("json files not exist!")
 	word2idx = json.load(open("word2idx.json"))
 
